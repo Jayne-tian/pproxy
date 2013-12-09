@@ -27,8 +27,8 @@ def cserver():
 			print "recvice: %s" % (buf)
 #			print buf
 			getHost()
-		#	t2=threading.Thread(target=getIp(),args=())
-	#		t2.start()
+#			t2=threading.Thread(target=getIp(),args=())
+#			t2.start()
 #			t2.join()
 			getIp()
 #			print dnsip
@@ -53,24 +53,23 @@ def getHost():
 		return dhost
 def getIp():
 	global dnsip
-	#result = socket.getaddrinfo('wenku.baidu.com', None)
-	#resultt = socket.getaddrinfo('www.test.com', None)
+#	result = socket.getaddrinfo('wenku.baidu.com', None)
+#	resultt = socket.getaddrinfo('www.test.com', None)
 	resultt = socket.getaddrinfo(dhost,None)
 	if resultt:
 		dnsip=resultt[0][4][0]
 		print 'get ip success!!!!!!!!!!'
 		return dnsip
-	#global ip
-	#dnsData='Queries'+dhost+': type A,class In Name:'+dhost+'Type: A (Host address)Class: IN (0x0001)'
-	#dnscl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	#if dnscl.sendto(dnsData,dnsip):
+#	global ip
+#	dnsData='Queries'+dhost+': type A,class In Name:'+dhost+'Type: A (Host address)Class: IN (0x0001)'
+#	dnscl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#	if dnscl.sendto(dnsData,dnsip):
 #		dnsdata=dnscl.recvfrom(10240)
 #		if dnsdata:
 #			print dnsdata
 def forworld():
 	global cbuf
 	cl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-	#cl.connect((dnsip,80))
 	cl.connect((dnsip,80))
 	cl.send(buf)
 	cbuf=cl.recv(302400)
@@ -81,7 +80,6 @@ def forworld():
 #			connection.send('welcome to server!')  
 #		else:  
 #			connection.send('please go out!')  
-	#cl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-	#cl.connect(('www.baidu.com',80))
-
+#	cl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+#	cl.connect(('www.baidu.com',80))
 cserver()
