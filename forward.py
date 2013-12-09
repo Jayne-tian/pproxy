@@ -14,7 +14,6 @@ def cserver():
 			connection.settimeout(10)  
 			pbuf = connection.recv(302400)  
 			pbuf=re.search("GET http://(.*?)/(.*?) HTTP/1.1([\s\S]*)",pbuf)
-			#pbuf=re.search("GET http://(.*?)/(.*?) HTTP/1.1\r\n(.*)",pbuf)
 			if pbuf:
 				buf="GET /"+pbuf.group(2)+" HTTP/1.1"+pbuf.group(3)
     			#print rbuf
@@ -25,13 +24,13 @@ def cserver():
 				file.close
 			print '####'
 			print "recvice: %s" % (buf)
-#			print buf
+			#print buf
 			getHost()
-#			t2=threading.Thread(target=getIp(),args=())
-#			t2.start()
-#			t2.join()
+			#t2=threading.Thread(target=getIp(),args=())
+			#t2.start()
+			#t2.join()
 			getIp()
-#			print dnsip
+			#print dnsip
 			t=threading.Thread(target=forworld,args=())
 			t.start()
 			t.join()
@@ -45,16 +44,16 @@ def getHost():
 	dhost_se=re.search('Host: (.*)\r\n',buf)
 	if dhost_se:
 		dhost=dhost_se.group(1)
-#		file=open('content.txt','w+')
-#		file.write(dhost)
-#		file.close
+		#file=open('content.txt','w+')
+		#file.write(dhost)
+		#file.close
 		resultt = socket.getaddrinfo(dhost,None)
 		print 'get host success!!!!!!!!!!'
 		return dhost
 def getIp():
 	global dnsip
-#	result = socket.getaddrinfo('wenku.baidu.com', None)
-#	resultt = socket.getaddrinfo('www.test.com', None)
+	#result = socket.getaddrinfo('wenku.baidu.com', None)
+	#resultt = socket.getaddrinfo('www.test.com', None)
 	resultt = socket.getaddrinfo(dhost,None)
 	if resultt:
 		dnsip=resultt[0][4][0]
