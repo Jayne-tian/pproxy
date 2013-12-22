@@ -13,6 +13,7 @@ def cserver():
 		if connection:  
 			connection.settimeout(10)  
 			pbuf = connection.recv(302400)  
+			print pbuf
 			pbuf=re.search("GET http://(.*?)/(.*?) HTTP/1.1([\s\S]*)",pbuf)
 			if pbuf:
 				buf="GET /"+pbuf.group(2)+" HTTP/1.1"+pbuf.group(3)
@@ -22,21 +23,22 @@ def cserver():
 				file=open('content.txt','w+')
 				file.write(buf)
 				file.close
-			print '####'
-			print "recvice: %s" % (buf)
+				if buf:
+#			print '####'
+#			print "recvice: %s" % (buf)
 			#print buf
-			getHost()
+					getHost()
 			#t2=threading.Thread(target=getIp(),args=())
 			#t2.start()
 			#t2.join()
-			getIp()
+					getIp()
 			#print dnsip
-			t=threading.Thread(target=forworld,args=())
-			t.start()
-			t.join()
-			print cbuf
-			connection.send(cbuf)
-			print 'back to hou !!!!!!'
+					t=threading.Thread(target=forworld,args=())
+					t.start()
+					t.join()
+					print cbuf
+					connection.send(cbuf)
+					print 'back to hou !!!!!!'
 		connection.close()  
 		
 def getHost():
