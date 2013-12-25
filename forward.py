@@ -12,21 +12,13 @@ def cserver():
 		connection,address = sock.accept() 
 		if connection:  
 			connection.settimeout(10)  
-			pbuf = connection.recv(302400)  
-			print pbuf
+			pbuf = connection.recv(1024)  
+			#print pbuf
 			pbuf=re.search("GET http://(.*?)/(.*?) HTTP/1.1([\s\S]*)",pbuf)
 			if pbuf:
 				buf="GET /"+pbuf.group(2)+" HTTP/1.1"+pbuf.group(3)
-    			#print rbuf
-				print '!!!!!!!!!'
-				print buf
-				file=open('content.txt','w+')
-				file.write(buf)
-				file.close
+				#print rbuf
 				if buf:
-#			print '####'
-#			print "recvice: %s" % (buf)
-			#print buf
 					getHost()
 			#t2=threading.Thread(target=getIp(),args=())
 			#t2.start()
@@ -38,7 +30,6 @@ def cserver():
 					t.join()
 					print cbuf
 					connection.send(cbuf)
-					print 'back to hou !!!!!!'
 		connection.close()  
 		
 def getHost():
@@ -72,9 +63,37 @@ def forworld():
 	global cbuf
 	cl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
 	cl.connect((dnsip,80))
+	cl.settimeout(1)
+	print 'starting send buf'
 	cl.send(buf)
-	cbuf=cl.recv(302400)
-	cl.close()	
+	print 'buf is ', buf
+	cbuf=cl.recv(1024)
+	print 'starting recving cbuf.....'
+	if cbuf:
+		cbufLen_g=re.search("Content-Length: (.*)\r\n",cbuf)
+		if cbufLen_g:
+			cbufLen=int(cbufLen_g.group(1))
+			print 'Centent-Length is ' ,cbufLen
+			if cbufLen:
+				cbuf1=cl.recv(cbufLen,socket.MSG_WAITALL)
+				cbuf=cbuf+cbuf1
+		else:
+			print 'recv again one'
+			try:
+				cbuf1=cl.recv(1024)
+			except socket.timeout:
+				return 0
+			if cbuf1!=None:
+				cbuf=cbuf+cbuf1
+			while  cbuf1!=None:
+				try:
+					print 'recv again'
+					cbuf1=cl.recv(1024)
+					print cbuf1
+					cbuf=cbuf+cbuf1
+				except socket.timeout:
+					cbuf1=None
+	cl.close()  
 	print 'get data success!!!!!!!!!!!'
 	return cbuf
 #		if buf == '1':  
