@@ -82,7 +82,7 @@ def forworld():
 			try:
 				cbuf1=cl.recv(1024)
 			except socket.timeout:
-				return 0
+				cbuf1=None
 			if cbuf1!=None:
 				cbuf=cbuf+cbuf1
 			while  cbuf1!=None:
