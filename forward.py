@@ -12,8 +12,10 @@ def cserver():
 		connection,address = sock.accept() 
 		if connection:  
 			connection.settimeout(10)  
+			#######接收保存client请求信息
 			pbuf = connection.recv(1024)  
 			#print pbuf
+			#提取请求头中的host,修改请求头
 			pbuf=re.search("GET http://(.*?)/(.*?) HTTP/1.1([\s\S]*)",pbuf)
 			if pbuf:
 				buf="GET /"+pbuf.group(2)+" HTTP/1.1"+pbuf.group(3)
@@ -32,6 +34,7 @@ def cserver():
 					connection.send(cbuf)
 		connection.close()  
 		
+##提取主机名
 def getHost():
 	global dhost
 	dhost_se=re.search('Host: (.*)\r\n',buf)
@@ -43,6 +46,7 @@ def getHost():
 		resultt = socket.getaddrinfo(dhost,None)
 		print 'get host success!!!!!!!!!!'
 		return dhost
+##解析ip
 def getIp():
 	global dnsip
 	#result = socket.getaddrinfo('wenku.baidu.com', None)
@@ -64,11 +68,9 @@ def forworld():
 	cl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
 	cl.connect((dnsip,80))
 	cl.settimeout(1)
-	print 'starting send buf'
 	cl.send(buf)
-	print 'buf is ', buf
+	##第一次接收headers,如果有Content-Length，以固定长度一次接收剩下的，如果没有该字段，循环每次接收1024字节，直到超时，判定接收完,将尔后每次接收的内容追加到第一次接收的内容中，一次返回给client
 	cbuf=cl.recv(1024)
-	print 'starting recving cbuf.....'
 	if cbuf:
 		cbufLen_g=re.search("Content-Length: (.*)\r\n",cbuf)
 		if cbufLen_g:
