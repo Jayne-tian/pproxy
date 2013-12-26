@@ -44,7 +44,6 @@ def getHost():
 		#file.write(dhost)
 		#file.close
 		resultt = socket.getaddrinfo(dhost,None)
-		print 'get host success!!!!!!!!!!'
 		return dhost
 ##解析ip
 def getIp():
@@ -54,7 +53,6 @@ def getIp():
 	resultt = socket.getaddrinfo(dhost,None)
 	if resultt:
 		dnsip=resultt[0][4][0]
-		print 'get ip success!!!!!!!!!!'
 		return dnsip
 #	global ip
 #	dnsData='Queries'+dhost+': type A,class In Name:'+dhost+'Type: A (Host address)Class: IN (0x0001)'
@@ -75,12 +73,10 @@ def forworld():
 		cbufLen_g=re.search("Content-Length: (.*)\r\n",cbuf)
 		if cbufLen_g:
 			cbufLen=int(cbufLen_g.group(1))
-			print 'Centent-Length is ' ,cbufLen
 			if cbufLen:
 				cbuf1=cl.recv(cbufLen,socket.MSG_WAITALL)
 				cbuf=cbuf+cbuf1
 		else:
-			print 'recv again one'
 			try:
 				cbuf1=cl.recv(1024)
 			except socket.timeout:
@@ -96,7 +92,6 @@ def forworld():
 				except socket.timeout:
 					cbuf1=None
 	cl.close()  
-	print 'get data success!!!!!!!!!!!'
 	return cbuf
 #		if buf == '1':  
 #			connection.send('welcome to server!')  
