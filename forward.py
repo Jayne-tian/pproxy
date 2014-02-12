@@ -8,6 +8,7 @@ threads=[]
 class pserver:
 	def __init__(self):
 		self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
+		self.sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
 		self.sock.bind(('localhost', 8002)) 
 		self.sock.listen(1000)
 		while True:
