@@ -21,7 +21,7 @@ def cserver():
         connection.settimeout(10)  
         #######接收保存client请求信息
         pbuf = connection.recv(1024)  
-        print pbuf
+        #print pbuf
         #提取请求头中的host,修改请求头
         pbuf=re.search("GET http://(.*?)/(.*?) HTTP/1.1([\s\S]*)",pbuf)
         if pbuf:
@@ -83,7 +83,7 @@ def forward():
         return 1
     if cbuf:
         print '第一次数据接收成功'
-        print cbuf
+        #print cbuf
         header_length=len(cbuf)
         cbufLen_g=re.search("Content-Length: (.*)\r\n",cbuf)
         if cbufLen_g:
