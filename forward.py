@@ -56,8 +56,6 @@ def getHost():
 ##解析ip
 def getIp():
     global dnsip
-    #result = socket.getaddrinfo('wenku.baidu.com', None)
-    #resultt = socket.getaddrinfo('www.test.com', None)
     resultt = socket.getaddrinfo(dhost,None)
     if resultt:
         dnsip=resultt[0][4][0]
@@ -101,25 +99,11 @@ def forward():
                             cbuf1=cl.recv(1460)
                     #cbuf1=cl.recv(cbufLen,socket.MSG_WAITALL)
                             cbuf_data=cbuf_data+cbuf1
-                            #print '已接收长度为 %d'  % (len(cbuf_data))
-                           # print len(cbuf)
-                 #           print 'now all length %d' % len(cbuf)
                         except Exception,ex:
                             print Exception,":",ex
                             print '已接收完'
                     if len(cbuf_data)==cbufLen:
                         print '接收所有数据成功'
-            #   try:
-        #           print '长度为:',cbufLen
-    #               print '获取长度成功，开始接收全部数据...'
-#                   cbuf1=cl.recv(cbufLen)
-                    #cbuf1=cl.recv(cbufLen,socket.MSG_WAITALL)
-#                       cbuf=cbuf+cbuf1
-#                       print '第二次'
-            #       print cbuf
-#                   except socket.timeout:
-#                       print '接收全部数据超时'
-#                       return 1
 #考虑到有的请求里面并不返回length这个字段，暂时不处理这种请求 else 段注释掉
         else:
             print '不包含length字段，无法处理请求!'
@@ -142,12 +126,6 @@ def forward():
     cl.close()  
     cbuf_all=[cbuf,cbuf_data]
     return cbuf_all
-#       if buf == '1':  
-#           connection.send('welcome to server!')  
-#       else:  
-#           connection.send('please go out!')  
-#   cl  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-#   cl.connect(('www.baidu.com',80))
 while True:
     try:
         connection,address = sock.accept() 
