@@ -26,7 +26,7 @@ def cserver():
         pbuf=re.search("GET http://(.*?)/(.*?) HTTP/1.1([\s\S]*)",pbuf)
         if pbuf:
             buf="GET /"+pbuf.group(2)+" HTTP/1.1"+pbuf.group(3)
-            #print rbuof
+            #print buf
             print '收到请求 --- > http://',pbuf.group(1),pbuf.group(2)
             print '开始转发....'
             if buf:
@@ -38,7 +38,8 @@ def cserver():
                     print '返回给client header'
                     connection.send(cbuf_all[0])
                     print '返回给client data'
-                    connection.send(cbuf_all[1])
+                    if cbuf_all !='':
+                        connection.send(cbuf_all[1])
                     time.sleep(5)
     print '发送完，关口socket'
     connection.close()  
@@ -72,7 +73,7 @@ def forward():
     cl.send(buf)
     #####返回给client时也应该分2次返回，一次返回header，一次返回数据
     print '发送代理请求中....'
-    ##第一次接收headers,如果有Content-Length，以固定长度一次接收剩下的，如果没有该字段，循环每次接收1024字节，直到超时，判定接收完,将尔后每次接收的内容追加到第一次接收的内容中，一次返回给client
+    #如果header+data 都小于1024的话，header+data会在一次就全部发送完毕
     try:
         print '开始接收数据...'
         cbuf=cl.recv(1024)
@@ -89,21 +90,27 @@ def forward():
         if cbufLen_g:
             cbufLen=int(cbufLen_g.group(1))
             if cbufLen:
-                #######应该计算已接收数据长度，如果刚好等于该值，则不需要进行下一步接收
                 print '长度为:',cbufLen
                 print '头部长度 %d' % header_length
-                if cbufLen != header_length:
-                    print '获取长度成功，开始接收全部数据...'
+                print '获取长度成功，开始接收全部数据...'
+                if header_length+cbufLen<=1024:
+                    cbuf_all=[cbuf,cbuf_data]
+                    return cbuf_all
+                if cbufLen<1460:
+                    cbuf_data=cl.recv(cbufLen)
+                    print '已接收长度 %d'  % (len(cbuf_data))
+                else:
                     while (len(cbuf_data)<cbufLen):
                         try:
                             cbuf1=cl.recv(1460)
-                    #cbuf1=cl.recv(cbufLen,socket.MSG_WAITALL)
+                #cbuf1=cl.recv(cbufLen,socket.MSG_WAITALL)
                             cbuf_data=cbuf_data+cbuf1
+                            #print '已接收长度 %d'  % (len(cbuf_data))
                         except Exception,ex:
                             print Exception,":",ex
                             print '已接收完'
-                    if len(cbuf_data)==cbufLen:
-                        print '接收所有数据成功'
+                if len(cbuf_data)==cbufLen:
+                    print '接收所有数据成功'
 #考虑到有的请求里面并不返回length这个字段，暂时不处理这种请求 else 段注释掉
         else:
             print '不包含length字段，无法处理请求!'
@@ -136,9 +143,10 @@ while True:
     pid=os.fork()
     if pid:
         connection.close   
+        continue
     else:
         print '开启子进程处理请求: %d'  % os.getpid()
-        sock.close
+        #sock.close
         try:
             cserver()
         except Exception,ex:
