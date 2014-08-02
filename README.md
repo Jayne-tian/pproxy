@@ -1,4 +1,3 @@
 pproxy
 ======
-
-python proxy http server
+一个http代理服务器
